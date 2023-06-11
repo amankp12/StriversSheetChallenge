@@ -1,1 +1,39 @@
 Best Time to Buy and Sell Stock
+
+Brute Force
+TLE
+O(N^2)
+class Solution{
+public:
+    int maxProfit(vector<int>& prices){
+    int maxPro = 0;
+    int n = prices.size();
+
+    for(int i = 0; i < n; i++){
+        
+        for(int j = i + 1; j < n; j++){
+            if(prices[j] > prices[i]){
+            maxPro = max(prices[j] - prices[i], maxPro);
+            }
+        }
+    }
+    return maxPro;
+    }
+};
+
+Optimal
+O(N)
+class Solution{
+public:
+    int maxProfit(vector<int>& prices){
+    int maxPro = 0;
+    int n = prices.size();
+    int minPrice = INT_MAX;
+
+    for(int i = 0; i < n; i++){
+        minPrice = min(minPrice , prices[i]);
+        maxPro = max(maxPro , prices[i] - minPrice);
+    }
+    return maxPro;
+    }
+};
