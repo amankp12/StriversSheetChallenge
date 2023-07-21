@@ -1,1 +1,201 @@
+Reverse a Linked List
 
+class Solution {
+public:
+
+    ListNode* reverseList(ListNode* head) {
+
+       //step 1
+        ListNode* prev_p = NULL;
+        ListNode* current_p = head;
+        ListNode* next_p;
+       
+       //step 2
+        while(current_p) {
+
+            next_p = current_p->next;
+            current_p->next = prev_p;
+            
+            prev_p = current_p;
+            current_p = next_p;
+        }
+
+        head = prev_p; //step 3
+        return head;
+    }
+};
+
+Find middle element in a Linked List
+
+class Solution {
+public:
+    ListNode* middleNode(ListNode* head) {
+        ListNode *slow = head, *fast = head;
+        while (fast && fast->next)
+            slow = slow->next, fast = fast->next->next;
+        return slow;
+    }
+};
+
+Merge two sorted Linked Lists
+
+
+class Solution {
+
+public:
+    ListNode* mergeTwoLists(ListNode* l1, ListNode* l2) {
+
+        // when list1 is empty then 
+        // our output will be same as list2
+        if(l1 == NULL) return l2; 
+
+        // when list2 is empty then our output 
+        // will be same as list1
+        if(l2 == NULL) return l1;
+
+        // pointing l1 and l2 to smallest and greatest one
+        if(l1->val > l2->val) std::swap(l1,l2);
+
+        // act as head of resultant merged list
+        ListNode* res = l1;
+
+        while(l1 != NULL && l2 != NULL) {
+ 
+            ListNode* temp = NULL;
+
+            while(l1 != NULL && l1->val <= l2->val) {
+
+                temp = l1;//storing last sorted node  
+                l1 = l1->next;
+            }
+
+            // link previous sorted node with 
+            // next larger node in list2
+            temp->next = l2;
+            std::swap(l1,l2);
+        }
+
+        return res;
+    }
+};
+
+
+Remove N-th node from the end of a Linked List
+
+class Solution {
+public:
+    ListNode* removeNthFromEnd(ListNode* head, int n) {
+        ListNode * start = new ListNode();
+        start -> next = head;
+        ListNode* fast = start;
+        ListNode* slow = start;     
+
+        for(int i = 1; i <= n; ++i)
+            fast = fast->next;
+    
+        while(fast->next != NULL)
+        {
+            fast = fast->next;
+            slow = slow->next;
+        }
+        
+        slow->next = slow->next->next;
+        
+        return start->next;
+    }
+};
+
+Add two numbers represented as Linked Lists
+
+class Solution {
+public:
+    ListNode* addTwoNumbers(ListNode* l1, ListNode* l2) {
+        ListNode *dummy = new ListNode(); 
+        ListNode *temp = dummy; 
+        int carry = 0;
+        while( (l1 != NULL || l2 != NULL) || carry) {
+            int sum = 0; 
+            if(l1 != NULL) {
+                sum += l1->val; 
+                l1 = l1 -> next; 
+            }
+            
+            if(l2 != NULL) {
+                sum += l2 -> val; 
+                l2 = l2 -> next; 
+            }
+            
+            sum += carry; 
+            carry = sum / 10; 
+            ListNode *node = new ListNode(sum % 10); 
+            temp -> next = node; 
+            temp = temp -> next; 
+        }
+        return dummy -> next; 
+    }
+};
+
+Delete given node in a Linked List : O(1) approach
+
+#include<iostream>
+using namespace std;
+
+class node {
+    public:
+        int num;
+        node* next;
+        node(int a) {
+            num = a;
+            next = NULL;
+        }
+};
+//function to insert node at the end of the list
+void insertNode(node* &head,int val) {
+    node* newNode = new node(val);
+    if(head == NULL) {
+        head = newNode;
+        return;
+    }
+    node* temp = head;
+    while(temp->next != NULL) temp = temp->next;
+    temp->next = newNode;
+}
+//function to get reference of the node to delete
+node* getNode(node* head,int val) {
+    while(head->num != val) head = head->next;
+    
+    return head;
+}
+//delete function as per the question
+void deleteNode(node* t) {
+    t->num = t->next->num;
+    t->next = t->next->next;
+    return;
+}
+//printing the list function
+void printList(node* head) {
+    while(head->next != NULL) {
+        cout<<head->num<<"->";
+        head = head->next;
+    }
+    cout<<head->num<<"\n";
+}
+
+int main(){
+    node* head = NULL;
+    //inserting node
+    insertNode(head,1);
+    insertNode(head,4);
+    insertNode(head,2);
+    insertNode(head,3);
+    //printing given list
+    cout<<"Given Linked List:\n";
+    printList(head);
+    node* t = getNode(head,2);
+    //delete node
+    deleteNode(t);
+    //list after deletion operation
+    cout<<"Linked List after deletion:\n";
+    printList(head);
+    return 0;
+}
