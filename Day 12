@@ -1,1 +1,133 @@
+Two Sum : Check if a pair with given sum exists in Array
 
+#include <bits/stdc++.h>
+using namespace std;
+
+vector<int> twoSum(int n, vector<int> &arr, int target) {
+    vector<int> ans;
+    for (int i = 0; i < n; i++) {
+        for (int j = i + 1; j < n; j++) {
+            if (arr[i] + arr[j] == target) {
+                ans.push_back(i);
+                ans.push_back(j);
+                return ans;
+            }
+        }
+    }
+    return { -1, -1};
+}
+
+int main()
+{
+    int n = 5;
+    vector<int> arr = {2, 6, 5, 8, 11};
+    int target = 14;
+    vector<int> ans = twoSum(n, arr, target);
+    cout << "This is the answer for variant 2: [" << ans[0] << ", "
+         << ans[1] << "]" << endl;
+    return 0;
+}
+
+4 Sum | Find Quads that add up to a target value
+
+
+
+
+#include <bits/stdc++.h>
+using namespace std;
+
+vector<vector<int>> fourSum(vector<int>& nums, int target) {
+    int n = nums.size(); //size of the array
+    vector<vector<int>> ans;
+
+    // sort the given array:
+    sort(nums.begin(), nums.end());
+
+    //calculating the quadruplets:
+    for (int i = 0; i < n; i++) {
+        // avoid the duplicates while moving i:
+        if (i > 0 && nums[i] == nums[i - 1]) continue;
+        for (int j = i + 1; j < n; j++) {
+            // avoid the duplicates while moving j:
+            if (j > i + 1 && nums[j] == nums[j - 1]) continue;
+
+            // 2 pointers:
+            int k = j + 1;
+            int l = n - 1;
+            while (k < l) {
+                long long sum = nums[i];
+                sum += nums[j];
+                sum += nums[k];
+                sum += nums[l];
+                if (sum == target) {
+                    vector<int> temp = {nums[i], nums[j], nums[k], nums[l]};
+                    ans.push_back(temp);
+                    k++; l--;
+
+                    //skip the duplicates:
+                    while (k < l && nums[k] == nums[k - 1]) k++;
+                    while (k < l && nums[l] == nums[l + 1]) l--;
+                }
+                else if (sum < target) k++;
+                else l--;
+            }
+        }
+    }
+
+    return ans;
+}
+
+int main()
+{
+    vector<int> nums = {4, 3, 3, 4, 4, 2, 1, 2, 1, 1};
+    int target = 9;
+    vector<vector<int>> ans = fourSum(nums, target);
+    cout << "The quadruplets are: \n";
+    for (auto it : ans) {
+        cout << "[";
+        for (auto ele : it) {
+            cout << ele << " ";
+        }
+        cout << "] ";
+    }
+    cout << "\n";
+    return 0;
+}
+
+
+Longest Consecutive Sequence in an Array
+
+
+
+
+#include<bits/stdc++.h>
+
+using namespace std;
+int longestConsecutive(vector < int > & nums) {
+  set < int > hashSet;
+  for (int num: nums) {
+    hashSet.insert(num);
+  }
+
+  int longestStreak = 0;
+
+  for (int num: nums) {
+    if (!hashSet.count(num - 1)) {
+      int currentNum = num;
+      int currentStreak = 1;
+
+      while (hashSet.count(currentNum + 1)) {
+        currentNum += 1;
+        currentStreak += 1;
+      }
+
+      longestStreak = max(longestStreak, currentStreak);
+    }
+  }
+  return longestStreak;
+}
+int main() {
+  vector<int> arr{100,200,1,2,3,4};
+  int lon = longestConsecutive(arr);
+  cout << "The longest consecutive sequence is " << lon << endl;
+}
