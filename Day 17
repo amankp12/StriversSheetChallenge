@@ -1,1 +1,275 @@
+Rotate a Linked List
 
+#include<bits/stdc++.h>
+using namespace std;
+
+class node {
+    public:
+        int num;
+        node* next;
+        node(int a) {
+            num = a;
+            next = NULL;
+        }
+};
+//utility function to insert node at the end of the list
+void insertNode(node* &head,int val) {
+    node* newNode = new node(val);
+    if(head == NULL) {
+        head = newNode;
+        return;
+    }
+    node* temp = head;
+    while(temp->next != NULL) temp = temp->next;
+    
+    temp->next = newNode;
+    return;
+}
+//utility function to rotate list by k times
+node* rotateRight(node* head,int k) {
+    if(head == NULL||head->next == NULL) return head;
+    for(int i=0;i<k;i++) {
+        node* temp = head;
+        while(temp->next->next != NULL) temp = temp->next;
+        node* end = temp->next;
+        temp->next = NULL;
+        end->next = head;
+        head = end;
+    }
+    return head;
+}
+//utility function to print list
+void printList(node* head) {
+    while(head->next != NULL) {
+        cout<<head->num<<"->";
+        head = head->next;
+    } 
+    cout<<head->num<<endl;
+    return;
+}
+
+int main() {
+    node* head = NULL;
+    //inserting Node
+    insertNode(head,1);
+    insertNode(head,2);
+    insertNode(head,3);
+    insertNode(head,4);
+    insertNode(head,5);
+    
+    cout<<"Original list: ";
+    printList(head);
+    
+    int k = 2;
+    node* newHead = rotateRight(head,k);//calling function for rotating right of 
+    the nodes by k times
+    
+    cout<<"After "<<k<<" iterations: ";
+    printList(newHead);//list after rotating nodes
+    return 0;
+}
+
+Clone Linked List with Random and Next Pointer
+
+#include<bits/stdc++.h>
+using namespace std;
+
+class Node {
+    public:
+        int val;
+        Node* next;
+        Node* random;
+        Node(int value) {
+            val = value;
+            next = NULL;
+            random = NULL;
+        }
+};
+
+Node* copyRandomList(Node* head) {
+    unordered_map<Node*,Node*> hashMap;
+    Node* temp = head;
+//first iteration for inserting deep nodes of every node in the hashmap.
+    while(temp != NULL) {
+        Node* newNode = new Node(temp->val);
+        hashMap[temp] = newNode;
+        temp = temp->next;
+    }
+    Node* t = head;
+//second iteration for linking next and random pointer as given question.
+    while(t != NULL) {
+        Node* node = hashMap[t];
+        node->next = (t->next != NULL) ? hashMap[t->next]:NULL;
+        node->random = (t->random != NULL) ? hashMap[t->random]:NULL;
+        t = t->next;
+    }
+    return hashMap[head];
+}
+
+void printList(Node* head) {
+    while(head != NULL) {
+        cout<<head->val<<':';
+        head->next != NULL ? cout<<head->next->val:cout<<"NULL";
+        head->random != NULL ? cout<<","<<head->random->val:cout<<",NULL";
+        cout<<endl;
+        head = head->next;
+    }
+}
+
+int main() {
+    Node* head = NULL;
+    
+    Node* node1 = new Node(1);
+    Node* node2 = new Node(2);
+    Node* node3 = new Node(3);
+    Node* node4 = new Node(4);
+    
+    head = node1;
+    head->next = node2;
+    head->next->next = node3;
+    head->next->next->next = node4;
+    
+    head->random = node4;
+    head->next->random = node1;
+    head->next->next->random = NULL;
+    head->next->next->next->random = node2;
+    
+    cout<<"Original list:(current node:node pointed by next pointer,node pointed 
+    by random pointer)\n";
+    printList(head);
+    
+    cout<<"Copy list:(current node:node pointed by next pointer,node pointed by 
+    random pointer)\n";
+    Node* newHead = copyRandomList(head);
+    printList(newHead);
+    return 0;
+}
+
+3 Sum : Find triplets that add up to a zero
+
+#include<bits/stdc++.h>
+
+using namespace std;
+vector < vector < int >> threeSum(vector < int > & nums) {
+  vector < vector < int >> ans;
+  vector < int > temp;
+  int i, j, k;
+  for (i = 0; i < nums.size() - 2; i++) {
+    for (j = i + 1; j < nums.size() - 1; j++) {
+      for (k = j + 1; k < nums.size(); k++) {
+        temp.clear();
+        if (nums[i] + nums[j] + nums[k] == 0) {
+          temp.push_back(nums[i]);
+          temp.push_back(nums[j]);
+          temp.push_back(nums[k]);
+        }
+        if (temp.size() != 0)
+          ans.push_back(temp);
+      }
+    }
+  }
+
+  return ans;
+}
+
+int main() {
+  vector < int > arr { -1, 0, 1, 2, -1, -4};
+  vector < vector < int >> ans;
+  ans = threeSum(arr);
+  cout << "The triplets are as follows: " << endl;
+  for (int i = 0; i < ans.size(); i++) {
+    for (int j = 0; j < ans[i].size(); j++) {
+      cout << ans[i][j] << " ";
+    }
+    cout << endl;
+  }
+  return 0;
+}
+
+Trapping Rainwater
+
+#include<bits/stdc++.h>
+
+using namespace std;
+int trap(vector < int > & arr) {
+  int n = arr.size();
+  int waterTrapped = 0;
+  for (int i = 0; i < n; i++) {
+    int j = i;
+    int leftMax = 0, rightMax = 0;
+    while (j >= 0) {
+      leftMax = max(leftMax, arr[j]);
+      j--;
+    }
+    j = i;
+    while (j < n) {
+      rightMax = max(rightMax, arr[j]);
+      j++;
+    }
+    waterTrapped += min(leftMax, rightMax) - arr[i];
+  }
+  return waterTrapped;
+}
+
+int main() {
+  vector < int > arr;
+  arr = {0,1,0,2,1,0,1,3,2,1,2,1};
+  cout << "The water that can be trapped is " << trap(arr) << endl;
+}
+
+Remove Duplicates in-place from Sorted Array
+
+
+#include<bits/stdc++.h>
+
+using namespace std;
+int removeDuplicates(int arr[], int n)
+{
+  int i = 0;
+  for (int j = 1; j < n; j++) {
+    if (arr[i] != arr[j]) {
+      i++;
+      arr[i] = arr[j];
+    }
+  }
+  return i + 1;
+}
+int main() {
+  int arr[] = {1,1,2,2,2,3,3};
+  int n = sizeof(arr)/sizeof(arr[0]);
+  int k = removeDuplicates(arr, n);
+  cout << "The array after removing duplicate elements is " << endl;
+  for (int i = 0; i < k; i++) {
+    cout << arr[i] << " ";
+  }
+}
+
+Count Maximum Consecutive One’s in the array
+
+#include <bits/stdc++.h>
+
+using namespace std;
+class Solution {
+  public:
+    int findMaxConsecutiveOnes(vector < int > & nums) {
+      int cnt = 0;
+      int maxi = 0;
+      for (int i = 0; i < nums.size(); i++) {
+        if (nums[i] == 1) {
+          cnt++;
+        } else {
+          cnt = 0;
+        }
+        maxi = max(maxi, cnt);
+      }
+      return maxi;
+    }
+};
+
+int main() {
+  vector < int > nums = { 1, 1, 0, 1, 1, 1 };
+  Solution obj;
+  int ans = obj.findMaxConsecutiveOnes(nums);
+  cout << "The maximum  consecutive 1's are " << ans;
+  return 0;
+}
