@@ -1,1 +1,212 @@
+Implement LRU Cache
 
+class LRUCache {
+  public:
+    class node {
+      public:
+        int key;
+      int val;
+      node * next;
+      node * prev;
+      node(int _key, int _val) {
+        key = _key;
+        val = _val;
+      }
+    };
+
+  node * head = new node(-1, -1);
+  node * tail = new node(-1, -1);
+
+  int cap;
+  unordered_map < int, node * > m;
+
+  LRUCache(int capacity) {
+    cap = capacity;
+    head -> next = tail;
+    tail -> prev = head;
+  }
+
+  void addnode(node * newnode) {
+    node * temp = head -> next;
+    newnode -> next = temp;
+    newnode -> prev = head;
+    head -> next = newnode;
+    temp -> prev = newnode;
+  }
+
+  void deletenode(node * delnode) {
+    node * delprev = delnode -> prev;
+    node * delnext = delnode -> next;
+    delprev -> next = delnext;
+    delnext -> prev = delprev;
+  }
+
+  int get(int key_) {
+    if (m.find(key_) != m.end()) {
+      node * resnode = m[key_];
+      int res = resnode -> val;
+      m.erase(key_);
+      deletenode(resnode);
+      addnode(resnode);
+      m[key_] = head -> next;
+      return res;
+    }
+
+    return -1;
+  }
+
+  void put(int key_, int value) {
+    if (m.find(key_) != m.end()) {
+      node * existingnode = m[key_];
+      m.erase(key_);
+      deletenode(existingnode);
+    }
+    if (m.size() == cap) {
+      m.erase(tail -> prev -> key);
+      deletenode(tail -> prev);
+    }
+
+    addnode(new node(key_, value));
+    m[key_] = head -> next;
+  }
+};
+
+Area of largest rectangle in Histogram
+
+#include <bits/stdc++.h>
+
+using namespace std;
+// Brute Force Approach to find largest rectangle area in Histogram
+int largestarea(int arr[], int n) {
+  int maxArea = 0;
+  for (int i = 0; i < n; i++) {
+    int minHeight = INT_MAX;
+    for (int j = i; j < n; j++) {
+      minHeight = min(minHeight, arr[j]);
+      maxArea = max(maxArea, minHeight * (j - i + 1));
+    }
+  }
+  return maxArea;
+}
+int main() {
+  int arr[] = {2, 1, 5, 6, 2, 3, 1};
+  int n = 7;
+  cout << "The largest area in the histogram is " << largestarea(arr, n); // Printing the largest rectangle area
+  return 0;
+}
+
+Sliding Window Maximum
+
+#include<bits/stdc++.h>
+
+using namespace std;
+
+void GetMax(vector < int > nums, int l, int r, vector < int > & arr) {
+  int i, maxi = INT_MIN;
+  for (i = l; i <= r; i++)
+    maxi = max(maxi, nums[i]);
+  arr.push_back(maxi);
+}
+vector < int > maxSlidingWindow(vector < int > & nums, int k) {
+  int left = 0, right = 0;
+  int i, j;
+  vector < int > arr;
+  while (right < k - 1) {
+    right++;
+  }
+  while (right < nums.size()) {
+    GetMax(nums, left, right, arr);
+    left++;
+    right++;
+  }
+  return arr;
+}
+int main() {
+  int i, j, n, k = 3, x;
+  vector < int > arr {
+4,0,
+-1,
+3,
+5,
+3,
+6,
+8};
+  vector < int > ans;
+  ans = maxSlidingWindow(arr, k);
+  cout << "Maximum element in every " << k << " window " << endl;
+  for (i = 0; i < ans.size(); i++)
+    cout << ans[i] << "  ";
+  return 0;
+}
+
+Implement Min Stack
+
+class MinStack {
+  stack < pair < int, int >> st;
+
+  public:
+    void push(int x) {
+      int min;
+      if (st.empty()) {
+        min = x;
+      } else {
+        min = std::min(st.top().second, x);
+      }
+      st.push({x,min});
+    }
+
+  void pop() {
+    st.pop();
+  }
+
+  int top() {
+    return st.top().first;
+  }
+
+  int getMin() {
+    return st.top().second;
+  }
+};
+
+Rotten Oranges
+
+include<bits/stdc++.h>
+using namespace std;
+    int orangesRotting(vector<vector<int>>& grid) {
+        if(grid.empty())
+          return 0;
+
+        int m = grid.size(), n = grid[0].size(), days = 0, tot = 0, cnt = 0;
+        queue<pair<int, int>> rotten;
+        for(int i = 0; i < m; ++i){
+            for(int j = 0; j < n; ++j){
+                if(grid[i][j] != 0) tot++;
+                if(grid[i][j] == 2) rotten.push({i, j});
+            }
+        }
+        
+        int dx[4] = {0, 0, 1, -1};
+        int dy[4] = {1, -1, 0, 0};
+        
+        while(!rotten.empty()){
+            int k = rotten.size();
+            cnt += k; 
+            while(k--){
+                int x = rotten.front().first, y = rotten.front().second;
+                rotten.pop();
+                for(int i = 0; i < 4; ++i){
+                    int nx = x + dx[i], ny = y + dy[i];
+                    if(nx < 0 || ny < 0 || nx >= m || ny >= n || grid[nx][ny] != 1) continue;
+                    grid[nx][ny] = 2;
+                    rotten.push({nx, ny});
+                }
+            }
+            if(!rotten.empty()) days++;
+        }
+        return tot == cnt ? days : -1;
+    }
+int main(){
+    vector<vector<int>> v{ {2,1,1} , {1,1,0} , {0,1,1} } ;
+    int rotting = orangesRotting(v);
+    cout<<"Minimum Number of Minutes Required "<<rotting<<endl;
+}
