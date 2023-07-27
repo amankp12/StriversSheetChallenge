@@ -1,1 +1,54 @@
+Calculate the Diameter of a Binary Tree
 
+class Solution {
+public:
+    int diameterOfBinaryTree(TreeNode* root) {
+        int diameter = 0;
+        height(root, diameter);
+        return diameter;
+    }
+
+private:
+    int height(TreeNode* node, int& diameter) {
+
+        if (!node) {
+            return 0;
+        }
+
+        int lh = height(node->left, diameter);
+        int rh = height(node->right, diameter);
+
+        diameter = max(diameter, lh + rh);
+
+        return 1 + max(lh, rh);
+    }
+};
+
+Check if the Binary Tree is Balanced Binary Tree
+
+class Solution {
+public:
+    bool isBalanced(TreeNode* root) {
+        return dfsHeight (root) != -1;
+    }
+
+    int dfsHeight (TreeNode *root) {
+
+        if (root == NULL) return 0;
+        
+        int leftHeight = dfsHeight (root -> left);
+
+        if (leftHeight == -1) 
+            return -1;
+        
+        int rightHeight = dfsHeight (root -> right);
+
+        if (rightHeight == -1) 
+            return -1;
+        
+        if (abs(leftHeight - rightHeight) > 1)  
+            return -1;
+
+        return max (leftHeight, rightHeight) + 1;
+    }
+};
