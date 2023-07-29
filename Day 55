@@ -1,0 +1,189 @@
+Subset sum equal to target (DP- 14)
+
+#include <bits/stdc++.h>
+
+using namespace std;
+
+bool subsetSumUtil(int ind, int target, vector<int>& arr, vector<vector<int>> &dp){
+    if(target==0)
+        return true;
+    
+    if(ind == 0)
+        return arr[0] == target;
+    
+    if(dp[ind][target]!=-1)
+        return dp[ind][target];
+        
+    bool notTaken = subsetSumUtil(ind-1,target,arr,dp);
+    
+    bool taken = false;
+    if(arr[ind]<=target)
+        taken = subsetSumUtil(ind-1,target-arr[ind],arr,dp);
+        
+    return dp[ind][target]= notTaken||taken;
+}
+
+bool subsetSumToK(int n, int k, vector<int> &arr){
+    vector<vector<int>> dp(n,vector<int>(k+1,-1));
+    
+    return subsetSumUtil(n-1,k,arr,dp);
+}
+
+int main() {
+
+  vector<int> arr = {1,2,3,4};
+  int k=4;
+  int n = arr.size();
+                                 
+  if(subsetSumToK(n,k,arr))
+    cout<<"Subset with given target found";
+  else 
+    cout<<"Subset with given target not found";
+}
+
+Rod Cutting Problem | (DP – 24)
+
+#include <bits/stdc++.h>
+
+using namespace std;
+
+int cutRodUtil(vector<int>& price, int ind, int N, vector<vector<int>>& dp){
+
+    if(ind == 0){
+        return N*price[0];
+    }
+    
+    if(dp[ind][N]!=-1)
+        return dp[ind][N];
+        
+    int notTaken = 0 + cutRodUtil(price,ind-1,N,dp);
+    
+    int taken = INT_MIN;
+    int rodLength = ind+1;
+    if(rodLength <= N)
+        taken = price[ind] + cutRodUtil(price,ind,N-rodLength,dp);
+        
+    return dp[ind][N] = max(notTaken,taken);
+}
+
+
+int cutRod(vector<int>& price,int N) {
+
+    vector<vector<int>> dp(N,vector<int>(N+1,-1));
+    return cutRodUtil(price,N-1,N,dp);
+}
+
+int main() {
+
+  vector<int> price = {2,5,7,8,10};
+  
+  int n = price.size();
+                                 
+  cout<<"The Maximum price generated is "<<cutRod(price,n);
+}
+
+Implement Trie
+
+#include<bits/stdc++.h>
+using namespace std;
+#define IOS ios::sync_with_stdio(0); cin.tie(0); cout.tie(0);
+#define endl "\n"
+#define MAXN 100001
+#define INF 1e18+1
+struct Node {
+	Node *links[26];
+	bool flag = false;
+	//checks if the reference trie is present or not
+	bool containKey(char ch) {
+		return (links[ch - 'a'] != NULL);
+	}
+	//creating reference trie
+	void put(char ch, Node *node) {
+		links[ch - 'a'] = node;
+	}
+	//to get the next node for traversal
+	Node *get(char ch) {
+		return links[ch - 'a'];
+	}
+	//setting flag to true at the end of the word
+	void setEnd() {
+		flag = true;
+	}
+	//checking if the word is completed or not
+	bool isEnd() {
+		return flag;
+	}
+};
+class Trie {
+private:
+	Node* root;
+public:
+	Trie() {
+		//creating new obejct
+		root = new Node();
+	}
+
+	void insert(string word) {
+		//initializing dummy node pointing to root initially
+		Node *node = root;
+		for (int i = 0; i < word.size(); i++) {
+			if (!node->containKey(word[i])) {
+				node->put(word[i], new Node());
+			}
+			//moves to reference trie
+			node = node->get(word[i]);
+		}
+		node->setEnd();
+	}
+
+	bool search(string word) {
+		Node *node = root;
+		for (int i = 0; i < word.size(); i++) {
+			if (!node->containKey(word[i])) {
+				return false;
+			}
+			node = node->get(word[i]);
+		}
+		return node->isEnd();
+	}
+
+	bool startsWith(string prefix) {
+		Node* node = root;
+		for (int i = 0; i < prefix.size(); i++) {
+			if (!node->containKey(prefix[i])) {
+				return false;
+			}
+			node = node->get(prefix[i]);
+		}
+		return true;
+	}
+};
+
+int main()
+{
+	int n = 5;
+	vector<int>type = {1, 1, 2, 3, 2};
+	vector<string>value = {"hello", "help", "help", "hel", "hel"};
+	Trie trie;
+	for (int i = 0; i < n; i++) {
+		if (type[i] == 1) {
+			trie.insert(value[i]);
+		}
+		else if (type[i] == 2) {
+			if (trie.search(value[i])) {
+				cout << "true" << "\n";
+			}
+			else {
+				cout << "false" << "\n";
+			}
+		}
+		else {
+			if (trie.startsWith(value[i])) {
+				cout << "true" << "\n";
+			}
+			else {
+				cout << "false" << "\n";
+			}
+		}
+	}
+}
