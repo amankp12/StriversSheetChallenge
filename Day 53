@@ -1,0 +1,123 @@
+Longest Common Subsequence | (DP – 25)
+
+#include <bits/stdc++.h>
+
+using namespace std;
+
+int lcsUtil(string& s1, string& s2, int ind1, int ind2,  vector<vector<int>>& dp){
+
+    if(ind1<0 || ind2<0)
+        return 0;
+        
+    if(dp[ind1][ind2]!=-1)
+        return dp[ind1][ind2];
+    
+    if(s1[ind1] == s2[ind2])
+        return dp[ind1][ind2] = 1 + lcsUtil(s1,s2,ind1-1,ind2-1,dp);
+    
+    else 
+        return dp[ind1][ind2] = 0 + max(lcsUtil(s1,s2,ind1,ind2-1,dp),lcsUtil
+       (s1,s2,ind1-1,ind2,dp));
+   
+}
+
+
+int lcs(string s1, string s2) {
+    
+    int n=s1.size();
+    int m=s2.size();
+
+    vector<vector<int>> dp(n,vector<int>(m,-1));
+    return lcsUtil(s1,s2,n-1,m-1,dp);
+}
+
+int main() {
+
+  string s1= "acd";
+  string s2= "ced";
+                                 
+  cout<<"The Length of Longest Common Subsequence is "<<lcs(s1,s2);
+}
+
+0/1 Knapsack (DP – 19)
+
+#include <bits/stdc++.h>
+
+using namespace std;
+
+int knapsackUtil(vector<int>& wt, vector<int>& val, int ind, int W, vector<vector<int>>& dp){
+
+    if(ind == 0){
+        if(wt[0] <=W) return val[0];
+        else return 0;
+    }
+    
+    if(dp[ind][W]!=-1)
+        return dp[ind][W];
+        
+    int notTaken = 0 + knapsackUtil(wt,val,ind-1,W,dp);
+    
+    int taken = INT_MIN;
+    if(wt[ind] <= W)
+        taken = val[ind] + knapsackUtil(wt,val,ind-1,W-wt[ind],dp);
+        
+    return dp[ind][W] = max(notTaken,taken);
+}
+
+
+int knapsack(vector<int>& wt, vector<int>& val, int n, int W){
+    
+    vector<vector<int>> dp(n,vector<int>(W+1,-1));
+    return knapsackUtil(wt, val, n-1, W, dp);
+}
+
+int main(){
+
+  vector<int> wt = {1,2,4,5};
+  vector<int> val = {5,4,8,6};
+  int W=5;
+  
+  int n = wt.size();
+                                 
+  cout<<"The Maximum value of items, thief can steal is " <<knapsack(wt,val,n,W);
+}
+
+Edit Distance | (DP-33)
+
+#include <bits/stdc++.h>
+using namespace std;
+
+int editDistanceUtil(string& S1, string& S2, int i, int j, vector<vector<int>>& dp){
+    
+    if(i<0)
+        return j+1;
+    if(j<0)
+        return i+1;
+        
+    if(dp[i][j]!=-1) return dp[i][j];
+        
+    if(S1[i]==S2[j])
+        return dp[i][j] =  0+editDistanceUtil(S1,S2,i-1,j-1,dp);
+        
+    // Minimum of three choices
+    else return dp[i][j] = 1+min(editDistanceUtil(S1,S2,i-1,j-1,dp),
+    min(editDistanceUtil(S1,S2,i-1,j,dp),editDistanceUtil(S1,S2,i,j-1,dp)));
+    
+}
+
+int editDistance(string& S1, string& S2){
+    
+    int n = S1.size();
+    int m = S2.size();
+    
+    vector<vector<int>> dp(n,vector<int>(m,-1));
+    return editDistanceUtil(S1,S2,n-1,m-1,dp);
+    
+}
+
+int main(){
+  string s1 = "horse";
+  string s2 = "ros";
+
+  cout << "The minimum number of operations required is: "<<editDistance(s1,s2);
+}
