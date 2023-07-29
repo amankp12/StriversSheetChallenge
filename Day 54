@@ -1,0 +1,123 @@
+Matrix Chain Multiplication | (DP-48)
+
+#include <bits/stdc++.h>
+using namespace std;
+
+int f(vector<int>& arr, int i, int j){
+    
+    // base condition
+    if(i == j)
+        return 0;
+        
+    int mini = INT_MAX;
+    
+    // partioning loop
+    for(int k = i; k<= j-1; k++){
+        
+        int ans = f(arr,i,k) + f(arr, k+1,j) + arr[i-1]*arr[k]*arr[j];
+        
+        mini = min(mini,ans);
+        
+    }
+    
+    return mini;
+}
+
+
+int matrixMultiplication(vector<int>& arr, int N){
+    
+    int i =1;
+    int j = N-1;
+    
+    
+    return f(arr,i,j);
+    
+    
+}
+
+int main(){
+	vector<int> arr = {10, 20, 30, 40, 50};
+	int n = arr.size();
+	cout<<"The minimum number of operations is "<<matrixMultiplication(arr,n);
+	return 0;
+}
+
+Minimum Path Sum In a Grid (DP 10)
+
+#include <bits/stdc++.h>
+
+using namespace std;
+
+int minSumPathUtil(int i, int j,vector<vector<int>> &matrix,vector<vector<int>> &dp)
+{
+  if(i==0 && j == 0)
+    return matrix[0][0];
+  if(i<0 || j<0)
+    return 1e9;
+  if(dp[i][j]!=-1) return dp[i][j];
+    
+  int up = matrix[i][j]+minSumPathUtil(i-1,j,matrix,dp);
+  int left = matrix[i][j]+minSumPathUtil(i,j-1,matrix,dp);
+  
+  return dp[i][j] = min(up,left);
+  
+}
+
+int minSumPath(int n, int m, vector<vector<int> > &matrix){
+    vector<vector<int> > dp(n,vector<int>(m,-1));
+    return minSumPathUtil(n-1,m-1,matrix,dp);
+    
+}
+
+int main() {
+
+  vector<vector<int> > matrix{{5,9,6},
+                            {11,5,2}};
+                            
+  int n = matrix.size();
+  int m = matrix[0].size();
+  
+  cout<<minSumPath(n,m,matrix);
+}
+
+Coin Change 2 (DP – 22)
+
+#include <bits/stdc++.h>
+
+using namespace std;
+
+long countWaysToMakeChangeUtil(vector<int>& arr,int ind, int T, vector<vector<long
+>>& dp){
+
+    if(ind == 0){
+        return (T%arr[0]==0);
+    }
+    
+    if(dp[ind][T]!=-1)
+        return dp[ind][T];
+        
+    long notTaken = countWaysToMakeChangeUtil(arr,ind-1,T,dp);
+    
+    long taken = 0;
+    if(arr[ind] <= T)
+        taken = countWaysToMakeChangeUtil(arr,ind,T-arr[ind],dp);
+        
+    return dp[ind][T] = notTaken + taken;
+}
+
+
+long countWaysToMakeChange(vector<int>& arr, int n, int T){
+    
+    vector<vector<long>> dp(n,vector<long>(T+1,-1));
+    return countWaysToMakeChangeUtil(arr,n-1, T, dp);
+}
+
+int main() {
+
+  vector<int> arr ={1,2,3};
+  int target=4;
+  
+  int n =arr.size();
+                                 
+  cout<<"The total number of ways is " <<countWaysToMakeChange(arr,n,target);
+}
